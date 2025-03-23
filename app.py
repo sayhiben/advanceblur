@@ -6,10 +6,10 @@ import gradio as gr
 import torch
 from huggingface_hub import hf_hub_download
 from nodes import NODE_CLASS_MAPPINGS
-import spaces
 from comfy import model_management
 
-@spaces.GPU(duration=60) #modify the duration for the average it takes for your worflow to run, in seconds
+# import spaces
+# @spaces.GPU(duration=60) #modify the duration for the average it takes for your worflow to run, in seconds
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
