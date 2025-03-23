@@ -8,7 +8,8 @@ from typing import Any, Mapping, Sequence, Union
 import gradio as gr
 import spaces
 import torch
-from huggingface_hub import hf_hub_download
+from huggingface_hub import snapshot_download, hf_hub_download
+
 
 from nodes import NODE_CLASS_MAPPINGS
 
@@ -27,7 +28,12 @@ hf_hub_download(
     filename="codeformer-v0.1.0.pth",
     local_dir="models/facerestore_models",
 )
-
+snapshot_download(
+    repo_id="multimodalart/flux-style-shaping",
+    repo_type="space",                        # It's a Space repository [oai_citation_attribution:3‡github.com](https://github.com/huggingface/huggingface_hub/blob/main/src/huggingface_hub/_snapshot_download.py#:~:text=repo_type%20%28%60str%60%2C%20)
+    local_dir=".",                            # Download to current working directory (Space runtime)
+    allow_patterns="custom_nodes/ComfyUI-KJNodes/*",  # Only files in this folder [oai_citation_attribution:4‡huggingface.co](https://huggingface.co/docs/huggingface_hub/en/guides/download#:~:text=,nlp%22%2C%20allow_patterns%3D%22%2A.json)
+)
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
     """Returns the value at the given index of a sequence or mapping.
