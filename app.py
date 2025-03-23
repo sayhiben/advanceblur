@@ -1,15 +1,32 @@
 import os
 import sys
+
+sys.path.insert(0, os.path.dirname(__file__))
+
 from typing import Any, Mapping, Sequence, Union
 
 import gradio as gr
+import spaces
 import torch
 from huggingface_hub import hf_hub_download
-from nodes import NODE_CLASS_MAPPINGS
-from comfy import model_management
 
-# import spaces
-# @spaces.GPU(duration=60) #modify the duration for the average it takes for your worflow to run, in seconds
+from nodes import NODE_CLASS_MAPPINGS
+
+hf_hub_download(
+    repo_id="uwg/upscaler",
+    filename="ESRGAN/4x_NMKD-Siax_200k.pth",
+    local_dir="models/upscale_models",
+)
+hf_hub_download(
+    repo_id="ezioruan/inswapper_128.onnx",
+    filename="inswapper_128.onnx",
+    local_dir="models/insightface",
+)
+hf_hub_download(
+    repo_id="ziixzz/codeformer-v0.1.0.pth",
+    filename="codeformer-v0.1.0.pth",
+    local_dir="models/facerestore_models",
+)
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -76,11 +93,8 @@ def add_extra_model_paths() -> None:
     """
     Parse the optional extra_model_paths.yaml file and add the parsed paths to the sys.path.
     """
-    try:
-        from app import load_extra_path_config
-    except ImportError:
-        print("Could not import load_extra_path_config from main.py. Looking in utils.extra_config instead.")
-        from utils.extra_config import load_extra_path_config
+    from utils.extra_config import load_extra_path_config
+
     extra_model_paths = find_path("extra_model_paths.yaml")
 
     if extra_model_paths is not None:
@@ -100,9 +114,11 @@ def import_custom_nodes() -> None:
     creates a PromptQueue, and initializes the custom nodes.
     """
     import asyncio
+
     import execution
-    from nodes import init_extra_nodes
     import server
+    from nodes import init_extra_nodes
+
     # Creating a new event loop and setting it as the default loop
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -115,6 +131,7 @@ def import_custom_nodes() -> None:
     init_extra_nodes()
 
 
+@spaces.GPU(duration=360)
 def advance_blur(input_image):
     import_custom_nodes()
     with torch.inference_mode():
@@ -136,7 +153,7 @@ def advance_blur(input_image):
 
         upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
         upscale_model = upscalemodelloader.load_model(
-            model_name="4x_NMKD-Siax_200k.pth"
+            model_name="ESRGAN/4x_NMKD-Siax_200k.pth"
         )
 
         reactorbuildfacemodel = NODE_CLASS_MAPPINGS["ReActorBuildFaceModel"]()
@@ -214,7 +231,7 @@ if __name__ == "__main__":
             with gr.Column():
                 input_image = gr.Image(label="Input Image", type="filepath")
                 generate_btn = gr.Button("Generate")
-            
+
             with gr.Column():
                 # The output image
                 output_image = gr.Image(label="Generated Image")
@@ -222,9 +239,6 @@ if __name__ == "__main__":
             # When clicking the button, it will trigger the `generate_image` function, with the respective inputs
             # and the output an image
             generate_btn.click(
-                fn=advance_blur,
-                inputs=[input_image],
-                outputs=[output_image]
+                fn=advance_blur, inputs=[input_image], outputs=[output_image]
             )
         app.launch(share=True)
-
