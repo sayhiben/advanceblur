@@ -91,13 +91,13 @@ reactorfaceswap = NODE_CLASS_MAPPINGS["ReActorFaceSwap"]()
 imageupscalewithmodel = NODE_CLASS_MAPPINGS["ImageUpscaleWithModel"]()
 saveimage = NODE_CLASS_MAPPINGS["SaveImage"]()
 UPSCALE_MODEL = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_200k.pth")
-model_loaders = [
-    UPSCALE_MODEL,
-    FACE_MODEL,
-]
-model_management.load_models_gpu([
-    loader[0].patcher if hasattr(loader[0], 'patcher') else loader[0] for loader in model_loaders
-])
+# model_loaders = [
+#     UPSCALE_MODEL,
+#     FACE_MODEL,
+# ]
+# model_management.load_models_gpu([
+#     loader[0].patcher if hasattr(loader[0], 'patcher') else loader[0] for loader in model_loaders
+# ])
 
 
 def load_extra_path_config(yaml_path):
