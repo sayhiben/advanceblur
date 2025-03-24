@@ -79,7 +79,6 @@ def import_custom_nodes() -> None:
 
 
 # Preload nodes, models.
-import_custom_nodes()
 loadimage = NODE_CLASS_MAPPINGS["LoadImage"]()
 upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
 reactorloadfacemodel = NODE_CLASS_MAPPINGS["ReActorLoadFaceModel"]()
@@ -215,6 +214,7 @@ add_extra_model_paths()
 
 @spaces.GPU(duration=60)
 def advance_blur(input_image):
+    import_custom_nodes()
     with torch.inference_mode():
         loaded_input_image = loadimage.load_image(
             image=input_image,
