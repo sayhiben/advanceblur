@@ -47,7 +47,7 @@ hf_hub_download(
 hf_hub_download(
     repo_id="model2/advance_face_model",
     filename="advance_face_model.safetensors",
-    local_dir="models/reactor/face_models",
+    local_dir="models/reactor/faces",
 )
 
 
