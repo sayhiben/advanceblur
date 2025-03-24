@@ -93,13 +93,14 @@ saveimage = NODE_CLASS_MAPPINGS["SaveImage"]()
 upscale_model = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_200k.pth")
 model_loaders = [
     upscalemodelloader,
+    reactorloadfacemodel,
     reactorfaceswap,
     imageupscalewithmodel,
 ]
 valid_models = [
     getattr(loader[0], "patcher", loader[0])
     for loader in model_loaders
-    if not isinstance(getattr(loader[0], "patcher", None), dict)
+    if not isinstance(loader[0], dict) and not isinstance(getattr(loader[0], 'patcher', None), dict)
 ]
 model_management.load_models_gpu(valid_models)
 
