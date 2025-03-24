@@ -40,9 +40,24 @@ hf_hub_download(
     local_dir="models/facerestore_models",
 )
 hf_hub_download(
-    repo_id="darkeril/collection",
+    repo_id="gmk123/GFPGAN",
     filename="detection_Resnet50_Final.pth",
     local_dir="models/facedetection",
+)
+hf_hub_download(
+    repo_id="gmk123/GFPGAN",
+    filename="parsing_parsenet.pth",
+    local_dir="models/facedetection",
+)
+hf_hub_download(
+    repo_id="vladmandic/insightface-faceanalysis",
+    filename="buffalo_l.zip",
+    local_dir="models/insightface/models",
+)
+hf_hub_download(
+    repo_id="AdamCodd/vit-base-nsfw-detector",
+    filename="model.safetensors",
+    local_dir="models/nsfw_detector/vit-base-nsfw-detector",
 )
 hf_hub_download(
     repo_id="model2/advance_face_model",
