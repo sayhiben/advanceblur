@@ -79,29 +79,27 @@ def import_custom_nodes() -> None:
 
 
 # Preload nodes, models.
+import_custom_nodes()
 loadimage = NODE_CLASS_MAPPINGS["LoadImage"]()
 upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
 reactorloadfacemodel = NODE_CLASS_MAPPINGS["ReActorLoadFaceModel"]()
-face_model = reactorloadfacemodel.load_model(
+FACE_MODEL = reactorloadfacemodel.load_model(
     face_model="advance_face_model.safetensors"
 )
 imageresize = NODE_CLASS_MAPPINGS["ImageResize+"]()
 reactorfaceswap = NODE_CLASS_MAPPINGS["ReActorFaceSwap"]()
 imageupscalewithmodel = NODE_CLASS_MAPPINGS["ImageUpscaleWithModel"]()
 saveimage = NODE_CLASS_MAPPINGS["SaveImage"]()
-upscale_model = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_200k.pth")
+UPSCALE_MODEL = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_200k.pth")
 model_loaders = [
-    upscalemodelloader,
-    reactorloadfacemodel,
+    UPSCALE_MODEL,
+    FACE_MODEL,
     reactorfaceswap,
     imageupscalewithmodel,
 ]
-valid_models = [
-    getattr(loader[0], "patcher", loader[0])
-    for loader in model_loaders
-    if not isinstance(loader[0], dict) and not isinstance(getattr(loader[0], 'patcher', None), dict)
-]
-model_management.load_models_gpu(valid_models)
+model_management.load_models_gpu([
+    loader[0].patcher if hasattr(loader[0], 'patcher') else loader[0] for loader in model_loaders
+])
 
 
 def load_extra_path_config(yaml_path):
@@ -214,7 +212,6 @@ add_extra_model_paths()
 
 @spaces.GPU(duration=60)
 def advance_blur(input_image):
-    import_custom_nodes()
     with torch.inference_mode():
         loaded_input_image = loadimage.load_image(
             image=input_image,
@@ -243,11 +240,11 @@ def advance_blur(input_image):
             source_faces_index="0",
             console_log_level=2,
             input_image=get_value_at_index(resized_input_image, 0),
-            face_model=get_value_at_index(face_model, 0),
+            face_model=get_value_at_index(FACE_MODEL, 0),
         )
 
         upscaled_image = imageupscalewithmodel.upscale(
-            upscale_model=get_value_at_index(upscale_model, 0),
+            upscale_model=get_value_at_index(UPSCALE_MODEL, 0),
             image=get_value_at_index(swapped_image, 0),
         )
 
