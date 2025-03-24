@@ -1,18 +1,29 @@
+# TODO: Replace face images with face model to stop creating it every time
+# TODO: Figure out .cache error
+# TODO: Figure out comfyui-frontend error
+# TODO: Preload retinaface_resnet50
+# TODO: Preload nsfw model
+# TODO: Max out final image size as original image size
+# TODO: Double-check inclusion of all necessary custom nodes in repo
+# TODO: UI/UX: Better display on mobile so folks don't miss the final output
+# TODO: Upgrade gradio
+
+import logging
 import os
 import sys
-
-sys.path.insert(0, os.path.dirname(__file__))
-
 from typing import Any, Mapping, Sequence, Union
 
 import gradio as gr
 import spaces
 import torch
-from huggingface_hub import snapshot_download, hf_hub_download
+import yaml
+from huggingface_hub import hf_hub_download
 
-
+import folder_paths
+from comfy import model_management
 from nodes import NODE_CLASS_MAPPINGS
 
+# Load available models from HF
 hf_hub_download(
     repo_id="uwg/upscaler",
     filename="ESRGAN/4x_NMKD-Siax_200k.pth",
@@ -28,12 +39,90 @@ hf_hub_download(
     filename="codeformer-v0.1.0.pth",
     local_dir="models/facerestore_models",
 )
-snapshot_download(
-    repo_id="multimodalart/flux-style-shaping",
-    repo_type="space",                        # It's a Space repository [oai_citation_attribution:3‡github.com](https://github.com/huggingface/huggingface_hub/blob/main/src/huggingface_hub/_snapshot_download.py#:~:text=repo_type%20%28%60str%60%2C%20)
-    local_dir=".",                            # Download to current working directory (Space runtime)
-    allow_patterns="custom_nodes/ComfyUI-KJNodes/*",  # Only files in this folder [oai_citation_attribution:4‡huggingface.co](https://huggingface.co/docs/huggingface_hub/en/guides/download#:~:text=,nlp%22%2C%20allow_patterns%3D%22%2A.json)
-)
+
+# ReActor has its own special snowflake installation
+os.system("cd custom_nodes/ComfyUI-ReActor && python install.py")
+
+def import_custom_nodes() -> None:
+    """Find all custom nodes in the custom_nodes folder and add those node objects to NODE_CLASS_MAPPINGS
+
+    This function sets up a new asyncio event loop, initializes the PromptServer,
+    creates a PromptQueue, and initializes the custom nodes.
+    """
+    import asyncio
+
+    import execution
+    import server
+    from nodes import init_extra_nodes
+
+    # Creating a new event loop and setting it as the default loop
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    # Creating an instance of PromptServer with the loop
+    server_instance = server.PromptServer(loop)
+    execution.PromptQueue(server_instance)
+
+    # Initializing custom nodes
+    init_extra_nodes()
+
+
+# Preload nodes, models.
+import_custom_nodes()
+load_images_node = NODE_CLASS_MAPPINGS["LoadImagesFromFolderKJ"]()
+loadimage = NODE_CLASS_MAPPINGS["LoadImage"]()
+upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
+reactorbuildfacemodel = NODE_CLASS_MAPPINGS["ReActorBuildFaceModel"]()
+imageresize = NODE_CLASS_MAPPINGS["ImageResize+"]()
+reactorfaceswap = NODE_CLASS_MAPPINGS["ReActorFaceSwap"]()
+imageupscalewithmodel = NODE_CLASS_MAPPINGS["ImageUpscaleWithModel"]()
+saveimage = NODE_CLASS_MAPPINGS["SaveImage"]()
+upscale_model = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_200k.pth")
+model_loaders = [
+    upscalemodelloader,
+    reactorfaceswap,
+    imageupscalewithmodel,
+]
+valid_models = [
+    getattr(loader[0], "patcher", loader[0])
+    for loader in model_loaders
+    if not isinstance(getattr(loader[0], "patcher", None), dict)
+]
+model_management.load_models_gpu(valid_models)
+
+
+def load_extra_path_config(yaml_path):
+    with open(yaml_path, "r", encoding="utf-8") as stream:
+        config = yaml.safe_load(stream)
+    yaml_dir = os.path.dirname(os.path.abspath(yaml_path))
+    for c in config:
+        conf = config[c]
+        if conf is None:
+            continue
+        base_path = None
+        if "base_path" in conf:
+            base_path = conf.pop("base_path")
+            base_path = os.path.expandvars(os.path.expanduser(base_path))
+            if not os.path.isabs(base_path):
+                base_path = os.path.abspath(os.path.join(yaml_dir, base_path))
+        is_default = False
+        if "is_default" in conf:
+            is_default = conf.pop("is_default")
+        for x in conf:
+            for y in conf[x].split("\n"):
+                if len(y) == 0:
+                    continue
+                full_path = y
+                if base_path:
+                    full_path = os.path.join(base_path, full_path)
+                elif not os.path.isabs(full_path):
+                    full_path = os.path.abspath(os.path.join(yaml_dir, y))
+                normalized_path = os.path.normpath(full_path)
+                logging.info(
+                    "Adding extra search path {} {}".format(x, normalized_path)
+                )
+                folder_paths.add_model_folder_path(x, normalized_path, is_default)
+
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
     """Returns the value at the given index of a sequence or mapping.
@@ -99,8 +188,6 @@ def add_extra_model_paths() -> None:
     """
     Parse the optional extra_model_paths.yaml file and add the parsed paths to the sys.path.
     """
-    from utils.extra_config import load_extra_path_config
-
     extra_model_paths = find_path("extra_model_paths.yaml")
 
     if extra_model_paths is not None:
@@ -112,36 +199,9 @@ def add_extra_model_paths() -> None:
 add_comfyui_directory_to_sys_path()
 add_extra_model_paths()
 
-
-def import_custom_nodes() -> None:
-    """Find all custom nodes in the custom_nodes folder and add those node objects to NODE_CLASS_MAPPINGS
-
-    This function sets up a new asyncio event loop, initializes the PromptServer,
-    creates a PromptQueue, and initializes the custom nodes.
-    """
-    import asyncio
-
-    import execution
-    import server
-    from nodes import init_extra_nodes
-
-    # Creating a new event loop and setting it as the default loop
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    # Creating an instance of PromptServer with the loop
-    server_instance = server.PromptServer(loop)
-    execution.PromptQueue(server_instance)
-
-    # Initializing custom nodes
-    init_extra_nodes()
-
-
-@spaces.GPU(duration=360)
+@spaces.GPU(duration=60)
 def advance_blur(input_image):
-    import_custom_nodes()
     with torch.inference_mode():
-        load_images_node = NODE_CLASS_MAPPINGS["LoadImagesFromFolderKJ"]()
         source_images_batch = load_images_node.load_images(
             folder="source_faces/",
             width=1024,
@@ -152,91 +212,91 @@ def advance_blur(input_image):
             include_subfolders=False,
         )
 
-        loadimage = NODE_CLASS_MAPPINGS["LoadImage"]()
         loaded_input_image = loadimage.load_image(
             image=input_image,
         )
 
-        upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
-        upscale_model = upscalemodelloader.load_model(
-            model_name="ESRGAN/4x_NMKD-Siax_200k.pth"
+        face_model = reactorbuildfacemodel.blend_faces(
+            save_mode=True,
+            send_only=False,
+            face_model_name="default",
+            compute_method="Mean",
+            images=get_value_at_index(source_images_batch, 0),
         )
 
-        reactorbuildfacemodel = NODE_CLASS_MAPPINGS["ReActorBuildFaceModel"]()
-        imageresize = NODE_CLASS_MAPPINGS["ImageResize+"]()
-        reactorfaceswap = NODE_CLASS_MAPPINGS["ReActorFaceSwap"]()
-        imageupscalewithmodel = NODE_CLASS_MAPPINGS["ImageUpscaleWithModel"]()
-        saveimage = NODE_CLASS_MAPPINGS["SaveImage"]()
+        resized_input_image = imageresize.execute(
+            width=2560,
+            height=2560,
+            interpolation="bicubic",
+            method="keep proportion",
+            condition="downscale if bigger",
+            multiple_of=0,
+            image=get_value_at_index(loaded_input_image, 0),
+        )
 
-        for q in range(1):
-            face_model = reactorbuildfacemodel.blend_faces(
-                save_mode=True,
-                send_only=False,
-                face_model_name="default",
-                compute_method="Mean",
-                images=get_value_at_index(source_images_batch, 0),
-            )
+        swapped_image = reactorfaceswap.execute(
+            enabled=True,
+            swap_model="inswapper_128.onnx",
+            facedetection="retinaface_resnet50",
+            face_restore_model="codeformer-v0.1.0.pth",
+            face_restore_visibility=1,
+            codeformer_weight=1,
+            detect_gender_input="no",
+            detect_gender_source="no",
+            input_faces_index="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99",
+            source_faces_index="0",
+            console_log_level=2,
+            input_image=get_value_at_index(resized_input_image, 0),
+            face_model=get_value_at_index(face_model, 0),
+        )
 
-            resized_input_image = imageresize.execute(
-                width=2560,
-                height=2560,
-                interpolation="bicubic",
-                method="keep proportion",
-                condition="downscale if bigger",
-                multiple_of=0,
-                image=get_value_at_index(loaded_input_image, 0),
-            )
+        upscaled_image = imageupscalewithmodel.upscale(
+            upscale_model=get_value_at_index(upscale_model, 0),
+            image=get_value_at_index(swapped_image, 0),
+        )
 
-            swapped_image = reactorfaceswap.execute(
-                enabled=True,
-                swap_model="inswapper_128.onnx",
-                facedetection="retinaface_resnet50",
-                face_restore_model="codeformer-v0.1.0.pth",
-                face_restore_visibility=1,
-                codeformer_weight=1,
-                detect_gender_input="no",
-                detect_gender_source="no",
-                input_faces_index="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99",
-                source_faces_index="0",
-                console_log_level=2,
-                input_image=get_value_at_index(resized_input_image, 0),
-                face_model=get_value_at_index(face_model, 0),
-            )
+        final_image = imageresize.execute(
+            width=2560,
+            height=2560,
+            interpolation="lanczos",
+            method="keep proportion",
+            condition="downscale if bigger",
+            multiple_of=0,
+            image=get_value_at_index(upscaled_image, 0),
+        )
 
-            upscaled_image = imageupscalewithmodel.upscale(
-                upscale_model=get_value_at_index(upscale_model, 0),
-                image=get_value_at_index(swapped_image, 0),
-            )
+        saved_image = saveimage.save_images(
+            filename_prefix="advance_blur",
+            images=get_value_at_index(final_image, 0),
+        )
 
-            final_image = imageresize.execute(
-                width=2560,
-                height=2560,
-                interpolation="lanczos",
-                method="keep proportion",
-                condition="downscale if bigger",
-                multiple_of=0,
-                image=get_value_at_index(upscaled_image, 0),
-            )
-
-            saved_image = saveimage.save_images(
-                filename_prefix="advance_blur",
-                images=get_value_at_index(final_image, 0),
-            )
-
-            saved_path = f"output/{saved_image['ui']['images'][0]['filename']}"
-            return saved_path
+        saved_path = f"output/{saved_image['ui']['images'][0]['filename']}"
+        return saved_path
 
 
 if __name__ == "__main__":
     # Start your Gradio app
     with gr.Blocks() as app:
         # Add a title
-        gr.Markdown("# Advance Blur")
+        gr.Markdown(
+            "# Advance Blur"
+            ""
+            'Advance Blur uses a sophisticated technique called "Vance Blurring"'
+            " to anonymize images of people. This process also removes identifiable"
+            " metadata. Uploaded images and data are permanently deleted after processing."
+            ""
+            "Advance Blur works best when subjects face the camera. Any similarity to"
+            " persons, living or dead, is purely coincidental, comedic, karmic justice,"
+            " and/or parody."
+            ""
+            "_No sofas, couches, chaises, or other living-room furniture have been harmed in "
+            " the production of this application._"
+        )
 
         with gr.Row():
             with gr.Column():
                 input_image = gr.Image(label="Input Image", type="filepath")
-                generate_btn = gr.Button("Generate")
+                generate_btn = gr.Button("Submit")
 
             with gr.Column():
                 # The output image
@@ -248,3 +308,5 @@ if __name__ == "__main__":
                 fn=advance_blur, inputs=[input_image], outputs=[output_image]
             )
         app.launch(share=True)
+
+        gr.Markdown('#### Have you even said "Thank you"?')

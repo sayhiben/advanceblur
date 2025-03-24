@@ -3,7 +3,7 @@ albumentations>=1.4.16
 av
 color-matcher
 colour-science
-comfyui-frontend-package==1.14.5
+comfyui-frontend-package
 dill
 einops
 gradio
@@ -14,7 +14,7 @@ matplotlib
 mss
 numba
 numpy>=1.25.0
-onnx>=1.14.0
+onnx
 opencv-python>=4.7.0.72
 piexif
 pillow>=10.3.0
