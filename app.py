@@ -39,6 +39,17 @@ hf_hub_download(
     filename="codeformer-v0.1.0.pth",
     local_dir="models/facerestore_models",
 )
+hf_hub_download(
+    repo_id="darkeril/collection ",
+    filename="detection_Resnet50_Final.pth",
+    local_dir="models/facedetection",
+)
+hf_hub_download(
+    repo_id="model2/advance_face_model",
+    filename="advance_face_model.safetensors",
+    local_dir="models/reactor/face_models",
+)
+
 
 # ReActor has its own special snowflake installation
 os.system("cd custom_nodes/ComfyUI-ReActor && python install.py")
@@ -69,10 +80,12 @@ def import_custom_nodes() -> None:
 
 # Preload nodes, models.
 import_custom_nodes()
-load_images_node = NODE_CLASS_MAPPINGS["LoadImagesFromFolderKJ"]()
 loadimage = NODE_CLASS_MAPPINGS["LoadImage"]()
 upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
-reactorbuildfacemodel = NODE_CLASS_MAPPINGS["ReActorBuildFaceModel"]()
+reactorloadfacemodel = NODE_CLASS_MAPPINGS["ReActorLoadFaceModel"]()
+face_model = reactorloadfacemodel.load_model(
+    face_model="advance_face_model.safetensors"
+)
 imageresize = NODE_CLASS_MAPPINGS["ImageResize+"]()
 reactorfaceswap = NODE_CLASS_MAPPINGS["ReActorFaceSwap"]()
 imageupscalewithmodel = NODE_CLASS_MAPPINGS["ImageUpscaleWithModel"]()
@@ -202,26 +215,8 @@ add_extra_model_paths()
 @spaces.GPU(duration=60)
 def advance_blur(input_image):
     with torch.inference_mode():
-        source_images_batch = load_images_node.load_images(
-            folder="source_faces/",
-            width=1024,
-            height=1024,
-            keep_aspect_ratio="crop",
-            image_load_cap=0,
-            start_index=0,
-            include_subfolders=False,
-        )
-
         loaded_input_image = loadimage.load_image(
             image=input_image,
-        )
-
-        face_model = reactorbuildfacemodel.blend_faces(
-            save_mode=True,
-            send_only=False,
-            face_model_name="default",
-            compute_method="Mean",
-            images=get_value_at_index(source_images_batch, 0),
         )
 
         resized_input_image = imageresize.execute(
