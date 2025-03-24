@@ -40,7 +40,7 @@ hf_hub_download(
     local_dir="models/facerestore_models",
 )
 hf_hub_download(
-    repo_id="darkeril/collection ",
+    repo_id="darkeril/collection",
     filename="detection_Resnet50_Final.pth",
     local_dir="models/facedetection",
 )
