@@ -6,7 +6,6 @@ __pycache__/
 /models/
 /temp/
 !custom_nodes/example_node.py.example
-extra_model_paths.yaml
 /.vs
 .vscode/
 .idea/
@@ -20,5 +19,3 @@ venv/
 *.log
 web_custom_versions/
 .DS_Store
-*.safetensors
-*.pth
