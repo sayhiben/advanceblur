@@ -94,8 +94,6 @@ UPSCALE_MODEL = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_20
 model_loaders = [
     UPSCALE_MODEL,
     FACE_MODEL,
-    reactorfaceswap,
-    imageupscalewithmodel,
 ]
 model_management.load_models_gpu([
     loader[0].patcher if hasattr(loader[0], 'patcher') else loader[0] for loader in model_loaders
