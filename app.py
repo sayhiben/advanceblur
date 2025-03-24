@@ -54,11 +54,11 @@ hf_hub_download(
     filename="buffalo_l.zip",
     local_dir="models/insightface/models",
 )
-hf_hub_download(
-    repo_id="AdamCodd/vit-base-nsfw-detector",
-    filename="model.safetensors",
-    local_dir="models/nsfw_detector/vit-base-nsfw-detector",
-)
+# hf_hub_download(
+#     repo_id="AdamCodd/vit-base-nsfw-detector",
+#     filename="model.safetensors",
+#     local_dir="models/nsfw_detector/vit-base-nsfw-detector",
+# )
 hf_hub_download(
     repo_id="model2/advance_face_model",
     filename="advance_face_model.safetensors",
@@ -286,15 +286,15 @@ if __name__ == "__main__":
         # Add a title
         gr.Markdown(
             "# Advance Blur"
-            ""
+            "\n\n"
             'Advance Blur uses a sophisticated technique called "Vance Blurring"'
             " to anonymize images of people. This process also removes identifiable"
             " metadata. Uploaded images and data are permanently deleted after processing."
-            ""
+            "\n\n"
             "Advance Blur works best when subjects face the camera. Any similarity to"
             " persons, living or dead, is purely coincidental, comedic, karmic justice,"
             " and/or parody."
-            ""
+            "\n\n"
             "_No sofas, couches, chaises, or other living-room furniture have been harmed in "
             " the production of this application._"
         )
