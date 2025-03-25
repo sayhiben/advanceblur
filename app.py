@@ -19,8 +19,8 @@ from nodes import NODE_CLASS_MAPPINGS
 
 # Load available models from HF
 hf_hub_download(
-    repo_id="uwg/upscaler",
-    filename="ESRGAN/4x_NMKD-Siax_200k.pth",
+    repo_id="Phips/2xNomosUni_span_multijpg_ldl",
+    filename="2xNomosUni_span_multijpg_ldl.safetensors",
     local_dir="models/upscale_models",
 )
 hf_hub_download(
@@ -95,7 +95,7 @@ FACE_MODEL = reactorloadfacemodel.load_model(
 imageresize = NODE_CLASS_MAPPINGS["ImageResize+"]()
 reactorfaceswap = NODE_CLASS_MAPPINGS["ReActorFaceSwap"]()
 imageupscalewithmodel = NODE_CLASS_MAPPINGS["ImageUpscaleWithModel"]()
-UPSCALE_MODEL = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_200k.pth")
+UPSCALE_MODEL = upscalemodelloader.load_model(model_name="2xNomosUni_span_multijpg_ldl.safetensors")
 
 
 def load_extra_path_config(yaml_path):
