@@ -92,7 +92,7 @@ FACE_MODEL = reactorloadfacemodel.load_model(
 imageresize = NODE_CLASS_MAPPINGS["ImageResize+"]()
 reactorfaceswap = NODE_CLASS_MAPPINGS["ReActorFaceSwap"]()
 imageupscalewithmodel = NODE_CLASS_MAPPINGS["ImageUpscaleWithModel"]()
-saveimage = NODE_CLASS_MAPPINGS["SaveImage"]()
+local_save = NODE_CLASS_MAPPINGS["Local Save"]()
 UPSCALE_MODEL = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_200k.pth")
 
 
@@ -258,8 +258,9 @@ def advance_blur(input_image):
             image=get_value_at_index(upscaled_image, 0),
         )
 
-        saved_image = saveimage.save_images(
-            filename_prefix="advance_blur",
+        saved_image = local_save.process_images(
+            prefix="advance_blur",
+            file_format="JPEG",
             images=get_value_at_index(final_image, 0),
         )
 
