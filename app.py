@@ -275,14 +275,9 @@ def advance_blur(input_image):
 if __name__ == "__main__":
     # Start your Gradio app
     css_code = """
-.gradio-container {
-    max-width: 480px; /* keep UI narrow for mobile-friendliness */
-    margin: 0 auto;   /* center the content */
-}
-
 #fixed-image-size {
-    width: 300px !important;  /* fix the width of image */
-    height: 300px !important; /* fix the height of image */
+    max-width: 500px !important;  /* fix the width of image */
+    height: 500px !important; /* fix the height of image */
     object-fit: cover;        /* makes the image fill area without stretching */
 }
 """
@@ -299,28 +294,25 @@ if __name__ == "__main__":
             """,
         )
 
-        with gr.Column():
-            input_image = gr.Image(
-                type="filepath",
-                label="Upload Your Image",
-                elem_id="fixed-image-size",
-                show_label=True,
-            )
-            submit_btn = gr.Button("Submit", variant="primary")
+        with gr.Row():
 
-            output_image = gr.Image(
-                label="Vance Blurred Image",
-                elem_id="fixed-image-size",
-                show_label=True,
-            )
+            with gr.Column():
+                input_image = gr.Image(
+                    type="filepath",
+                    label="Upload Your Image",
+                    elem_id="fixed-image-size",
+                    show_label=True,
+                )
+                submit_btn = gr.Button("Submit", variant="primary")
+
+            with gr.Column():
+                output_image = gr.Image(
+                    label="Vance Blurred Image",
+                    elem_id="fixed-image-size",
+                    show_label=True,
+                )
 
             # Trigger your blur function
             submit_btn.click(fn=advance_blur, inputs=[input_image], outputs=[output_image])
-
-            # Option to "Start Over" (clear inputs/outputs)
-            start_over_btn = gr.Button("Start Over", variant="secondary")
-            start_over_btn.click(
-                fn=lambda: (None, None), inputs=[], outputs=[input_image, output_image]
-            )
 
     app.launch(share=True)
