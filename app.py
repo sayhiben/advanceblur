@@ -304,7 +304,6 @@ if __name__ == "__main__":
                 type="filepath",
                 label="Upload Your Image",
                 elem_id="fixed-image-size",
-                tool=None,
                 show_label=True,
             )
             submit_btn = gr.Button("Submit", variant="primary")
@@ -312,7 +311,6 @@ if __name__ == "__main__":
             output_image = gr.Image(
                 label="Vance Blurred Image",
                 elem_id="fixed-image-size",
-                tool=None,
                 show_label=True,
             )
 
