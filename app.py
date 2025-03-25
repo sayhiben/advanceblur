@@ -264,7 +264,7 @@ def advance_blur(input_image):
 
         img = Image.fromarray(
             np.clip(
-                255.0 * get_value_at_index(final_image, 0).cpu().numpy(), 0, 255
+                (255.0 * get_value_at_index(final_image, 0)[0].cpu().numpy()), 0, 255
             ).astype(np.uint8)
         )
         outpath = f"output/{image_file_name}-advance-blurred.jpg"
@@ -302,9 +302,7 @@ if __name__ == "__main__":
 
         # When clicking the button, it will trigger the `generate_image` function, with the respective inputs
         # and the output an image
-        generate_btn.click(
-            fn=advance_blur, inputs=[input_image], outputs=[input_image]
-        )
+        generate_btn.click(fn=advance_blur, inputs=[input_image], outputs=[input_image])
         app.launch(share=True)
 
         gr.Markdown('#### Have you even said "Thank you"?')
