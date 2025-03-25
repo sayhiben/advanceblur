@@ -20,7 +20,6 @@ import yaml
 from huggingface_hub import hf_hub_download
 
 import folder_paths
-from comfy import model_management
 from nodes import NODE_CLASS_MAPPINGS
 
 # Load available models from HF
@@ -54,11 +53,6 @@ hf_hub_download(
     filename="buffalo_l.zip",
     local_dir="models/insightface/models",
 )
-# hf_hub_download(
-#     repo_id="AdamCodd/vit-base-nsfw-detector",
-#     filename="model.safetensors",
-#     local_dir="models/nsfw_detector/vit-base-nsfw-detector",
-# )
 hf_hub_download(
     repo_id="model2/advance_face_model",
     filename="advance_face_model.safetensors",
@@ -96,6 +90,7 @@ def import_custom_nodes() -> None:
 # Preload nodes, models.
 import_custom_nodes()
 loadimage = NODE_CLASS_MAPPINGS["LoadImage"]()
+getimagesize = NODE_CLASS_MAPPINGS["GetImageSize"]()
 upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
 reactorloadfacemodel = NODE_CLASS_MAPPINGS["ReActorLoadFaceModel"]()
 FACE_MODEL = reactorloadfacemodel.load_model(
@@ -106,13 +101,6 @@ reactorfaceswap = NODE_CLASS_MAPPINGS["ReActorFaceSwap"]()
 imageupscalewithmodel = NODE_CLASS_MAPPINGS["ImageUpscaleWithModel"]()
 saveimage = NODE_CLASS_MAPPINGS["SaveImage"]()
 UPSCALE_MODEL = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_200k.pth")
-# model_loaders = [
-#     UPSCALE_MODEL,
-#     FACE_MODEL,
-# ]
-# model_management.load_models_gpu([
-#     loader[0].patcher if hasattr(loader[0], 'patcher') else loader[0] for loader in model_loaders
-# ])
 
 
 def load_extra_path_config(yaml_path):
@@ -230,6 +218,12 @@ def advance_blur(input_image):
             image=input_image,
         )
 
+        image_size =  getimagesize.execute(
+            image=get_value_at_index(loaded_input_image, 0),
+        )
+        original_width = get_value_at_index(image_size, 0)
+        original_height = get_value_at_index(image_size, 1)
+
         resized_input_image = imageresize.execute(
             width=2560,
             height=2560,
@@ -262,8 +256,8 @@ def advance_blur(input_image):
         )
 
         final_image = imageresize.execute(
-            width=2560,
-            height=2560,
+            width=original_width,
+            height=original_height,
             interpolation="lanczos",
             method="keep proportion",
             condition="downscale if bigger",
