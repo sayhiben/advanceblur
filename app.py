@@ -278,7 +278,6 @@ if __name__ == "__main__":
 #fixed-image-size {
     max-width: 500px !important;  /* fix the width of image */
     max-height: 500px !important; /* fix the height of image */
-    object-fit: cover;        /* makes the image fill area without stretching */
 }
 
 /* Use smaller max sizes on mobile */
@@ -296,7 +295,7 @@ if __name__ == "__main__":
             Anonymize your group photos using Vance Blurring!
             """)
 
-        with gr.Accordion("More info"):
+        with gr.Accordion("More info", open=False):
             gr.Markdown(
                 """
                 **Advance Blur** uses a sophisticated technique called "Vance Blurring" to anonymize images of people!
