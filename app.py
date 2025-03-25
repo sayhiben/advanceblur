@@ -7,10 +7,12 @@ import sys
 from typing import Any, Mapping, Sequence, Union
 
 import gradio as gr
+import numpy as np
 import spaces
 import torch
 import yaml
 from huggingface_hub import hf_hub_download
+from PIL import Image
 
 import folder_paths
 from nodes import NODE_CLASS_MAPPINGS
@@ -55,6 +57,7 @@ hf_hub_download(
 
 # ReActor has its own special snowflake installation
 os.system("cd custom_nodes/ComfyUI-ReActor && python install.py")
+
 
 def import_custom_nodes() -> None:
     """Find all custom nodes in the custom_nodes folder and add those node objects to NODE_CLASS_MAPPINGS
@@ -204,14 +207,16 @@ def add_extra_model_paths() -> None:
 add_comfyui_directory_to_sys_path()
 add_extra_model_paths()
 
+
 @spaces.GPU(duration=60)
 def advance_blur(input_image):
     with torch.inference_mode():
+        image_file_name = os.path.splitext(os.path.basename(input_image))[0]
         loaded_input_image = loadimage.load_image(
             image=input_image,
         )
 
-        image_size =  getimagesize.execute(
+        image_size = getimagesize.execute(
             image=get_value_at_index(loaded_input_image, 0),
         )
         original_width = get_value_at_index(image_size, 0)
@@ -258,14 +263,14 @@ def advance_blur(input_image):
             image=get_value_at_index(upscaled_image, 0),
         )
 
-        saved_image = local_save.process_images(
-            prefix="advance_blur",
-            file_format="JPEG",
-            images=get_value_at_index(final_image, 0),
+        img = Image.fromarray(
+            np.clip(
+                255.0 & get_value_at_index(final_image, 0).cpu().numpy(), 0, 255
+            ).astype(np.uint8)
         )
-
-        saved_path = f"output/{saved_image['ui']['images'][0]['filename']}"
-        return saved_path
+        outpath = f"output/{image_file_name}-advance-blurred.jpg"
+        img.save(outpath, quality=80, dpi=(72, 72))
+        return outpath
 
 
 if __name__ == "__main__":
