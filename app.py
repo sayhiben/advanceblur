@@ -95,7 +95,6 @@ FACE_MODEL = reactorloadfacemodel.load_model(
 imageresize = NODE_CLASS_MAPPINGS["ImageResize+"]()
 reactorfaceswap = NODE_CLASS_MAPPINGS["ReActorFaceSwap"]()
 imageupscalewithmodel = NODE_CLASS_MAPPINGS["ImageUpscaleWithModel"]()
-local_save = NODE_CLASS_MAPPINGS["Local Save"]()
 UPSCALE_MODEL = upscalemodelloader.load_model(model_name="ESRGAN/4x_NMKD-Siax_200k.pth")
 
 
