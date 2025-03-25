@@ -274,34 +274,55 @@ def advance_blur(input_image):
 
 if __name__ == "__main__":
     # Start your Gradio app
-    with gr.Blocks() as app:
-        # Add a title
+    css_code = """
+.gradio-container {
+    max-width: 480px; /* keep UI narrow for mobile-friendliness */
+    margin: 0 auto;   /* center the content */
+}
+
+#fixed-image-size {
+    width: 300px !important;  /* fix the width of image */
+    height: 300px !important; /* fix the height of image */
+    object-fit: cover;        /* makes the image fill area without stretching */
+}
+"""
+    with gr.Blocks(css=css_code, theme=gr.themes.Basic()) as app:
         gr.Markdown(
-            "# Advance Blur"
-            "\n\n"
-            'Advance Blur uses a sophisticated technique called "Vance Blurring"'
-            " to anonymize images of people. This process also removes identifiable"
-            " metadata. Uploaded images and data are permanently deleted after processing."
-            "\n\n"
-            "Advance Blur works best when subjects face the camera. Any similarity to"
-            " persons, living or dead, is purely coincidental, comedic, karmic justice,"
-            " and/or parody."
-            "\n\n"
-            "_No sofas, couches, chaises, or other living-room furniture have been harmed in "
-            " the production of this application._"
+            """
+            # Advance Blur
+
+            **Advance Blur** uses a sophisticated technique called "Vance Blurring" to anonymize images of people. 
+            This process also removes identifiable metadata. 
+            Uploaded images and data are permanently deleted after processing.
+
+            _No sofas, couches, chaises, or other living-room furniture were harmed in the production of this application._
+            """,
         )
 
-        # with gr.Row():
-        # with gr.Column():
-        input_image = gr.Image(type="filepath")
-        generate_btn = gr.Button("Submit")
+        with gr.Column():
+            input_image = gr.Image(
+                type="filepath",
+                label="Upload Your Image",
+                elem_id="fixed-image-size",
+                tool=None,
+                show_label=True,
+            )
+            submit_btn = gr.Button("Submit", variant="primary")
 
-        # with gr.Column():
-        #     # The output image
-        #     output_image = gr.Image(label="Generated Image")
+            output_image = gr.Image(
+                label="Blurred Image",
+                elem_id="fixed-image-size",
+                tool=None,
+                show_label=True,
+            )
 
-        # When clicking the button, it will trigger the `generate_image` function, with the respective inputs
-        # and the output an image
-        generate_btn.click(fn=advance_blur, inputs=[input_image], outputs=[input_image])
-        gr.Markdown('#### Have you even said "Thank you"?')
-        app.launch(share=True)
+            # Trigger your blur function
+            submit_btn.click(fn=advance_blur, inputs=[input_image], outputs=[output_image])
+
+            # Option to "Start Over" (clear inputs/outputs)
+            start_over_btn = gr.Button("Start Over", variant="secondary")
+            start_over_btn.click(
+                fn=lambda: (None, None), inputs=[], outputs=[input_image, output_image]
+            )
+
+    app.launch(share=True)
