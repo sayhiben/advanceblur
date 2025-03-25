@@ -277,25 +277,44 @@ if __name__ == "__main__":
     css_code = """
 #fixed-image-size {
     max-width: 500px !important;  /* fix the width of image */
-    height: 500px !important; /* fix the height of image */
+    max-height: 500px !important; /* fix the height of image */
     object-fit: cover;        /* makes the image fill area without stretching */
+}
+
+/* Use smaller max sizes on mobile */
+@media (max-width: 768px) {
+    #fixed-image-size {
+        max-width: 300px !important;
+        max-height: 300px !important;
+    }
 }
 """
     with gr.Blocks(css=css_code, theme=gr.themes.Base()) as app:
-        gr.Markdown(
-            """
-            # Advance Blur
+        gr.Markdown( """
+            # 🥸 Advance Blur
 
-            **Advance Blur** uses a sophisticated technique called "Vance Blurring" to anonymize images of people.
-            This process also removes identifiable metadata.
-            Uploaded images and data are permanently deleted after processing.
+            Anonymize your group photos using Vance Blurring!
+            """)
 
-            _No sofas, couches, chaises, or other living-room furniture were harmed in the production of this application._
-            """,
-        )
+        with gr.Accordion("More info"):
+            gr.Markdown(
+                """
+                **Advance Blur** uses a sophisticated technique called "Vance Blurring" to anonymize images of people!
+
+                **Features:**
+                - **Replaces up to 100 faces:** Anonymize your images using the face of the ideal American male!
+                - **Removes identifying metadata:** Ensures your privacy by removing all identifying EXIF, IPTC, and XMP metadata!
+                - **Safe and secure:** All uploaded images and data are permanently deleted after processing!
+
+                **Disclaimer:**
+                This application is for entertainment purposes only.
+                Any resemblance to actual persons, living or dead, is purely coincidental, comedic, karmic, and/or parody.
+
+                _No sofas, couches, chaises, or other living-room furniture were harmed in the production of Advance Blur._
+                """
+            )
 
         with gr.Row():
-
             with gr.Column():
                 input_image = gr.Image(
                     type="filepath",
