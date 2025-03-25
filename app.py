@@ -267,7 +267,7 @@ def advance_blur(input_image):
                 (255.0 * get_value_at_index(final_image, 0)[0].cpu().numpy()), 0, 255
             ).astype(np.uint8)
         )
-        outpath = f"output/{image_file_name}-advance-blurred.jpg"
+        outpath = f"advance-blurred-{os.urandom(16).hex()}.jpg"
         img.save(outpath, quality=80, dpi=(72, 72))
         return outpath
 
@@ -293,7 +293,7 @@ if __name__ == "__main__":
 
         # with gr.Row():
         # with gr.Column():
-        input_image = gr.Image(label="Input Image", type="filepath")
+        input_image = gr.Image(type="filepath")
         generate_btn = gr.Button("Submit")
 
         # with gr.Column():
@@ -303,6 +303,5 @@ if __name__ == "__main__":
         # When clicking the button, it will trigger the `generate_image` function, with the respective inputs
         # and the output an image
         generate_btn.click(fn=advance_blur, inputs=[input_image], outputs=[input_image])
-        app.launch(share=True)
-
         gr.Markdown('#### Have you even said "Thank you"?')
+        app.launch(share=True)
