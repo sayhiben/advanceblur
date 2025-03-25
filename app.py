@@ -286,13 +286,13 @@ if __name__ == "__main__":
     object-fit: cover;        /* makes the image fill area without stretching */
 }
 """
-    with gr.Blocks(css=css_code, theme=gr.themes.Basic()) as app:
+    with gr.Blocks(css=css_code, theme=gr.themes.Base()) as app:
         gr.Markdown(
             """
             # Advance Blur
 
-            **Advance Blur** uses a sophisticated technique called "Vance Blurring" to anonymize images of people. 
-            This process also removes identifiable metadata. 
+            **Advance Blur** uses a sophisticated technique called "Vance Blurring" to anonymize images of people.
+            This process also removes identifiable metadata.
             Uploaded images and data are permanently deleted after processing.
 
             _No sofas, couches, chaises, or other living-room furniture were harmed in the production of this application._
@@ -310,7 +310,7 @@ if __name__ == "__main__":
             submit_btn = gr.Button("Submit", variant="primary")
 
             output_image = gr.Image(
-                label="Blurred Image",
+                label="Vance Blurred Image",
                 elem_id="fixed-image-size",
                 tool=None,
                 show_label=True,
