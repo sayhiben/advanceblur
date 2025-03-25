@@ -1,10 +1,3 @@
-# TODO: Replace face images with face model to stop creating it every time
-# TODO: Figure out .cache error
-# TODO: Figure out comfyui-frontend error
-# TODO: Preload retinaface_resnet50
-# TODO: Preload nsfw model
-# TODO: Max out final image size as original image size
-# TODO: Double-check inclusion of all necessary custom nodes in repo
 # TODO: UI/UX: Better display on mobile so folks don't miss the final output
 # TODO: Upgrade gradio
 
@@ -90,7 +83,7 @@ def import_custom_nodes() -> None:
 # Preload nodes, models.
 import_custom_nodes()
 loadimage = NODE_CLASS_MAPPINGS["LoadImage"]()
-getimagesize = NODE_CLASS_MAPPINGS["GetImageSize"]()
+getimagesize = NODE_CLASS_MAPPINGS["GetImageSize+"]()
 upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
 reactorloadfacemodel = NODE_CLASS_MAPPINGS["ReActorLoadFaceModel"]()
 FACE_MODEL = reactorloadfacemodel.load_model(
