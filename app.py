@@ -338,7 +338,7 @@ if __name__ == "__main__":
 
             with gr.Column():
                 output_image = gr.Image(
-                    label="Vance Blurred Image",
+                    label="\"Vance Blurred\" Result",
                     elem_id="fixed-image-size",
                     show_label=True,
                 )
