@@ -288,12 +288,10 @@ if __name__ == "__main__":
                     show_label=True,
                     interactive=False,
                 )
-        with gr.Row():
-            gr.Markdown(
-                """
-                (zoom if necessary)
-                """
-            )
+        # align-center a small (maybe subscript/superscript/or <small>) text telling the user to zoom if they need to on mobile
+        if gr.utils.is_mobile():
+            with gr.Row():
+                gr.HTML("<small>Zoom in for better view</small>")
 
         with gr.Accordion("More info", open=False):
             gr.Markdown(
