@@ -296,8 +296,8 @@ example-images {
 }
 
 .example-image {
-    max-width: 160px !important;  /* fix the width of image */
-    max-height: 160px !important; /* fix the height of image */
+    max-width: 140px !important;  /* fix the width of image */
+    max-height: 140px !important; /* fix the height of image */
 }
 """
     with gr.Blocks(css=css_code, theme=gr.themes.Base()) as app:
@@ -368,7 +368,6 @@ example-images {
             gr.Examples(
                 examples=[["before.jpg"]],
                 inputs=[input_image],
-                outputs=[output_image],
                 cache_examples=True,
                 fn=advance_blur,
                 run_on_click=True,
