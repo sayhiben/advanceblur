@@ -307,20 +307,20 @@ if __name__ == "__main__":
             """)
 
         with gr.Row(elem_id="example-images"):
-            gr.Image(
-                value="before.jpg",
-                label="Before",
-                show_label=True,
-                interactive=False,
-                elem_classes=["example-image"]
-            )
-            gr.Image(
-                value="after.jpg",
-                label="After",
-                show_label=True,
-                interactive=False,
-                elem_classes=["example-image"]
-            )
+            with gr.Column(elem_classes=["example-image"]):
+                gr.Image(
+                    value="before.jpg",
+                    label="Before",
+                    show_label=True,
+                    interactive=False,
+                )
+            with gr.Column(elem_classes=["example-image"]):
+                gr.Image(
+                    value="after.jpg",
+                    label="After",
+                    show_label=True,
+                    interactive=False,
+                )
 
         with gr.Accordion("More info", open=False):
             gr.Markdown(
