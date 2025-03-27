@@ -361,14 +361,4 @@ if __name__ == "__main__":
             submit_btn.click(fn=advance_blur, inputs=[input_image], outputs=[output_image])
                 # Add a Gradio Examples section to let users see a sample run
 
-        with gr.Row():
-            gr.Examples(
-                examples=[["before.jpg"]],
-                inputs=[input_image],
-                outputs=[output_image],
-                cache_examples=True,
-                fn=advance_blur,
-                run_on_click=True,
-            )
-
     app.launch(share=True)
