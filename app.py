@@ -320,7 +320,7 @@ if __name__ == "__main__":
                         value="after.jpg",
                         label="After",
                         show_label=True,
-                        interactive=False
+                        interactive=False,
                         elem_classes=["example-image"]
                     )
 
