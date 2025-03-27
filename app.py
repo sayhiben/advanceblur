@@ -289,12 +289,24 @@ if __name__ == "__main__":
 }
 
 #example-images {
+    display: flex;
     max-width: 320px;
     align-items: left;
     align: left;
+    justify-content: left;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow-x: auto;
+    gap: 20px;
 }
 
 .example-image {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-right: 20px;
     max-width: 140px !important;  /* fix the width of image */
     max-height: 140px !important; /* fix the height of image */
 }
