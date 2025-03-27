@@ -276,15 +276,15 @@ if __name__ == "__main__":
     # Start your Gradio app
     css_code = """
 #fixed-image-size {
-    max-width: 500px !important;  /* fix the width of image */
-    max-height: 500px !important; /* fix the height of image */
+    max-width: 600px !important;  /* fix the width of image */
+    max-height: 600px !important; /* fix the height of image */
 }
 
 /* Use smaller max sizes on mobile */
 @media (max-width: 768px) {
     #fixed-image-size {
-        max-width: 300px !important;
-        max-height: 300px !important;
+        max-width: 320px !important;
+        max-height: 320px !important;
     }
 }
 """
@@ -294,6 +294,20 @@ if __name__ == "__main__":
 
             Anonymize your group photos using Vance Blurring!
             """)
+
+        with gr.Row():
+            gr.Image(
+                value="before.jpg",
+                label="Before",
+                show_label=True,
+                interactive=False
+            )
+            gr.Image(
+                value="after.jpg",
+                label="After",
+                show_label=True,
+                interactive=False
+            )
 
         with gr.Accordion("More info", open=False):
             gr.Markdown(
@@ -332,5 +346,14 @@ if __name__ == "__main__":
 
             # Trigger your blur function
             submit_btn.click(fn=advance_blur, inputs=[input_image], outputs=[output_image])
+                # Add a Gradio Examples section to let users see a sample run
+
+            gr.Examples(
+                examples=[["before.jpg"]],  # <-- Update with a real test image path
+                inputs=[input_image],
+                outputs=[output_image],
+                fn=advance_blur,
+                run_on_click=True,
+            )
 
     app.launch(share=True)
