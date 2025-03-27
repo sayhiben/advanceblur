@@ -1,6 +1,3 @@
-# TODO: UI/UX: Better display on mobile so folks don't miss the final output
-# TODO: Upgrade gradio
-
 import logging
 import os
 import sys
@@ -145,9 +142,6 @@ def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
 
     Returns:
         Any: The value at the given index.
-
-    Raises:
-        IndexError: If the index is out of bounds for the object and the object is not a mapping.
     """
     try:
         return obj[index]
@@ -273,51 +267,50 @@ def advance_blur(input_image):
 
 
 if __name__ == "__main__":
-    # Start your Gradio app
+    # Updated, more flexible CSS
     css_code = """
-#fixed-image-size {
-    max-width: 600px !important;  /* fix the width of image */
-    max-height: 600px !important; /* fix the height of image */
-}
-
-/* Use smaller max sizes on mobile */
-@media (max-width: 768px) {
-    #fixed-image-size {
-        max-width: 320px !important;
-        max-height: 320px !important;
+    /* Container for side-by-side example images */
+    #example-images {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;         /* Wrap if not enough space */
+        justify-content: center; /* Center them in their container */
+        margin-bottom: 1rem;
     }
-}
 
-#example-images {
-    display: flex;
-    max-width: 320px;
-    align-items: left;
-    align: left;
-    justify-content: left;
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;
-    overflow-x: auto;
-    gap: 20px;
-}
+    /* Each example image column */
+    .example-image img {
+        width: 100%;
+        height: auto;
+        max-width: 300px;        /* You can adjust this for larger previews */
+    }
 
-.example-image {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    margin-right: 20px;
-    max-width: 140px !important;  /* fix the width of image */
-    max-height: 140px !important; /* fix the height of image */
-}
-"""
+    /* If you REALLY want them side-by-side on mobile,
+       let them scroll horizontally instead of wrapping. */
+    @media (max-width: 768px) {
+        #example-images {
+            overflow-x: auto;
+            flex-wrap: nowrap;    /* Force side-by-side with horizontal scroll */
+        }
+    }
+
+    /* Fix the main input/output image sizes for uniform display */
+    #fixed-image-size {
+        max-width: 600px !important;
+        max-height: 600px !important;
+    }
+    @media (max-width: 768px) {
+        #fixed-image-size {
+            max-width: 320px !important;
+            max-height: 320px !important;
+        }
+    }
+    """
+
     with gr.Blocks(css=css_code, theme=gr.themes.Base()) as app:
-        gr.Markdown( """
-            # 🥸 Advance Blur
+        gr.Markdown("# 🥸 Advance Blur")
 
-            Anonymize your group photos using Vance Blurring!
-            """)
-
+        # Side-by-side examples
         with gr.Row(elem_id="example-images"):
             with gr.Column(elem_classes=["example-image"]):
                 gr.Image(
@@ -337,18 +330,16 @@ if __name__ == "__main__":
         with gr.Accordion("More info", open=False):
             gr.Markdown(
                 """
-                **Advance Blur** uses a sophisticated technique called "Vance Blurring" to anonymize images of people!
+                **Advance Blur** uses a sophisticated technique called "Vance Blurring" to anonymize images!
 
                 **Features:**
-                - **Replaces up to 100 faces:** Anonymize your images using the face of the ideal American male!
-                - **Removes identifying metadata:** Ensures your privacy by removing all identifying EXIF, IPTC, and XMP metadata!
-                - **Safe and secure:** All uploaded images and data are permanently deleted after processing!
+                - **Replaces up to 100 faces** with the face of the ideal American male!
+                - **Removes identifying metadata** (EXIF, IPTC, and XMP).
+                - **Safe and secure:** All uploaded images are deleted after processing.
 
                 **Disclaimer:**
-                This application is for entertainment purposes only.
-                Any resemblance to actual persons, living or dead, is purely coincidental, comedic, karmic, and/or parody.
-
-                _No sofas, couches, chaises, or other living-room furniture were harmed in the production of Advance Blur._
+                This is for entertainment only. Any resemblance to actual persons is purely coincidental, comedic,
+                karmic, or parody.
                 """
             )
 
@@ -371,6 +362,6 @@ if __name__ == "__main__":
 
             # Trigger your blur function
             submit_btn.click(fn=advance_blur, inputs=[input_image], outputs=[output_image])
-                # Add a Gradio Examples section to let users see a sample run
 
+    # Launch the app
     app.launch(share=True)
