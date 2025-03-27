@@ -287,6 +287,11 @@ if __name__ == "__main__":
         max-height: 320px !important;
     }
 }
+
+#example-image {
+    max-width: 200px !important;  /* fix the width of image */
+    max-height: 200px !important; /* fix the height of image */
+}
 """
     with gr.Blocks(css=css_code, theme=gr.themes.Base()) as app:
         gr.Markdown( """
