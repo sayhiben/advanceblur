@@ -367,6 +367,7 @@ example-images {
             gr.Examples(
                 examples=[["before.jpg"]],
                 inputs=[input_image],
+                outputs=[output_image],
                 cache_examples=True,
                 fn=advance_blur,
                 run_on_click=True,
