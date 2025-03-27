@@ -303,8 +303,8 @@ if __name__ == "__main__":
 
                 **Features:**
                 - **Blur Faces**: Automatically detects and replaces faces with the face of the ideal American male.
-                - **Enhances Privacy:** Removes sensitive information from images: (GPS, EXIF, etc.)
-                - **Safe and secure:** No data is stored or shared long-term. System fully resets regularly.
+                - **Enhance Privacy:** Removes sensitive information from images: (GPS, EXIF, etc.)
+                - **Safe and secure:** No data is stored long-term or shared with others. System is fully reset on a regular basis.
 
                 **Disclaimer:**
                 Advance Blur is intended for entertainment purposes only. Any resemblance
