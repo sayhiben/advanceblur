@@ -302,7 +302,7 @@ if __name__ == "__main__":
                 technique known as "Vance Blurring" to enhance privacy for your images.
 
                 **Features:**
-                - **Blur Faces**: Automatically detects and replaces faces with the face of the ideal American male.
+                - **Blur Faces**: Automatically detects and replaces faces with the image of the ideal American male.
                 - **Enhance Privacy:** Removes sensitive information from images: (GPS, EXIF, etc.)
                 - **Safe and secure:** No data is stored long-term or shared with others. System is fully reset on a regular basis.
 
@@ -317,7 +317,7 @@ if __name__ == "__main__":
                 1. Upload your image.
                 2. Click the "Submit" button to apply "Vance Blurring" to your image.
                 3. Download the blurred image by long-clicking on it to Copy, or tap down-arrow to Save.
-                4. Share the blurred image with your friends and family, feeling confident in your privacy!
+                4. Share the image with your friends and family, feeling confident in your privacy!
 
                 **Tips:**
                 - For best results, use high-quality images at medium-ranges.
