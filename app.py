@@ -299,11 +299,13 @@ if __name__ == "__main__":
             flex-wrap: nowrap;
             overflow-x: auto;
             justify-content: flex-start;
+            max-width: 320px;
         }
 
         .example-image {
             flex: 0 0 auto;
             margin-right: 16px;
+            max-width: 50%;
         }
 
         .example-image img {
