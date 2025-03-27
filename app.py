@@ -289,9 +289,8 @@ if __name__ == "__main__":
 }
 
 example-images {
-    display: flex;
-    max-width: 600px;
-    align-items: center;
+    max-width: 320px;
+    align-items: left;
     align: left;
 }
 
