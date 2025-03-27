@@ -303,7 +303,7 @@ if __name__ == "__main__":
 
                 **Features:**
                 - **Blur Faces**: Automatically detects and replaces faces with the image of the ideal American male.
-                - **Enhance Privacy:** Removes sensitive information from images: (GPS, EXIF, etc.)
+                - **Enhance Privacy:** Removes sensitive information from images (GPS, EXIF, etc.)
                 - **Safe and secure:** No data is stored long-term or shared with others. System is fully reset on a regular basis.
 
                 **Disclaimer:**
