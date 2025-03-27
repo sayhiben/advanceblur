@@ -272,37 +272,33 @@ if __name__ == "__main__":
     /* Container for side-by-side example images */
     #example-images {
         display: flex;
-        gap: 20px;
-        flex-wrap: wrap;         /* Wrap if not enough space */
-        justify-content: center; /* Center them in their container */
-        margin-bottom: 1rem;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin: 0 auto;
+        max-width: 680px;  /* ✅ NEW: constrain the overall width */
+        width: 100%;
     }
 
-    /* Each example image column */
+    .example-image {
+        flex: 1 1 45%;
+        max-width: 300px;
+    }
+
     .example-image img {
         width: 100%;
         height: auto;
-        max-width: 300px;        /* You can adjust this for larger previews */
+        border-radius: 8px;
     }
 
-    /* If you REALLY want them side-by-side on mobile,
-       let them scroll horizontally instead of wrapping. */
+    /* Mobile: allow scroll if necessary */
     @media (max-width: 768px) {
         #example-images {
+            flex-wrap: nowrap;
             overflow-x: auto;
-            flex-wrap: nowrap;    /* Force side-by-side with horizontal scroll */
-        }
-    }
-
-    /* Fix the main input/output image sizes for uniform display */
-    #fixed-image-size {
-        max-width: 600px !important;
-        max-height: 600px !important;
-    }
-    @media (max-width: 768px) {
-        #fixed-image-size {
-            max-width: 320px !important;
-            max-height: 320px !important;
+            justify-content: flex-start;
         }
     }
     """
@@ -310,7 +306,6 @@ if __name__ == "__main__":
     with gr.Blocks(css=css_code, theme=gr.themes.Base()) as app:
         gr.Markdown("# 🥸 Advance Blur")
 
-        # Side-by-side examples
         with gr.Row(elem_id="example-images"):
             with gr.Column(elem_classes=["example-image"]):
                 gr.Image(
@@ -326,6 +321,7 @@ if __name__ == "__main__":
                     show_label=True,
                     interactive=False,
                 )
+
 
         with gr.Accordion("More info", open=False):
             gr.Markdown(
@@ -344,6 +340,17 @@ if __name__ == "__main__":
                 should).
 
                 Advance Blur only seeks to perfect images using the depiction of the ideal American male.
+
+                **Instructions:**
+                1. Upload your image.
+                2. Click the "Submit" button to apply "Vance Blurring" to your image.
+                3. Download the blurred image by long-clicking on it to Copy or down-arrow to Save.
+                4. Share the blurred image with your friends and family, feeling confident in your privacy!
+
+                **Tips:**
+                - For best results, use high-quality images at medium-ranges.
+                - Works best when faces are front-facing and well-lit.
+                - Always check the final image before sharing.
                 """
             )
 
