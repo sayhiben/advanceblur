@@ -330,16 +330,20 @@ if __name__ == "__main__":
         with gr.Accordion("More info", open=False):
             gr.Markdown(
                 """
-                **Advance Blur** uses a sophisticated technique called "Vance Blurring" to anonymize images!
+                **Advance Blur** is an anonymization tool that leverages a sophisticated
+                technique known as "Vance Blurring" to enhance privacy for your images.
 
                 **Features:**
-                - **Replaces up to 100 faces** with the face of the ideal American male!
-                - **Removes identifying metadata** (EXIF, IPTC, and XMP).
-                - **Safe and secure:** All uploaded images are deleted after processing.
+                - **Blur Faces**: Automatically detects and replaces faces with the face of the ideal American male.
+                - **Enhances Privacy:** Removes sensitive information from images: (GPS, EXIF, etc.)
+                - **Safe and secure:** No data is stored or shared long-term. System fully resets regularly.
 
                 **Disclaimer:**
-                This is for entertainment only. Any resemblance to actual persons is purely coincidental, comedic,
-                karmic, or parody.
+                Advance Blur is intended for entertainment purposes only. Any resemblance
+                to actual persons is entirely coincidental, karmic, and comedic (as a decent parody
+                should).
+
+                Advance Blur only seeks to perfect images using the depiction of the ideal American male.
                 """
             )
 
