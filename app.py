@@ -288,7 +288,11 @@ if __name__ == "__main__":
                     show_label=True,
                     interactive=False,
                 )
-
+            gr.Markdown(
+                """
+                (zoom if necessary)
+                """
+            )
 
         with gr.Accordion("More info", open=False):
             gr.Markdown(
