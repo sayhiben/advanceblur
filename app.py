@@ -301,12 +301,7 @@ if __name__ == "__main__":
             """)
 
         with gr.Row():
-            gr.Markdown(
-                """
-                ## Example:
-                """
-            )
-            with gr.Row():
+           with gr.Row():
                 with gr.Column():
                     gr.Image(
                         value="before.jpg",
