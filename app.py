@@ -288,6 +288,7 @@ if __name__ == "__main__":
                     show_label=True,
                     interactive=False,
                 )
+        with gr.Row():
             gr.Markdown(
                 """
                 (zoom if necessary)
