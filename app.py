@@ -296,8 +296,8 @@ example-images {
 }
 
 .example-image {
-    max-width: 200px !important;  /* fix the width of image */
-    max-height: 200px !important; /* fix the height of image */
+    max-width: 160px !important;  /* fix the width of image */
+    max-height: 160px !important; /* fix the height of image */
 }
 """
     with gr.Blocks(css=css_code, theme=gr.themes.Base()) as app:
