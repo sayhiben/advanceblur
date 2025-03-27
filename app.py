@@ -273,7 +273,7 @@ if __name__ == "__main__":
     with gr.Blocks(css=css_code, theme=gr.themes.Base()) as app:
         gr.Markdown("# 🥸 Advance Blur")
 
-        with gr.Row():
+        with gr.Row(max_height=300):
             with gr.Column(scale=1, min_width=160):
                 gr.Image(
                     value="before.jpg",
