@@ -274,14 +274,14 @@ if __name__ == "__main__":
         gr.Markdown("# 🥸 Advance Blur")
 
         with gr.Row():
-            with gr.Column(scale=1, min_width=160):
+            with gr.Column(scale=1, min_width=160, max_width=320):
                 gr.Image(
                     value="before.jpg",
                     label="Before",
                     show_label=True,
                     interactive=False,
                 )
-            with gr.Column(scale=1, min_width=160):
+            with gr.Column(scale=1, min_width=160, max_width=320):
                 gr.Image(
                     value="after.jpg",
                     label="After",
