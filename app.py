@@ -296,18 +296,26 @@ if __name__ == "__main__":
             """)
 
         with gr.Row():
-            gr.Image(
-                value="before.jpg",
-                label="Before",
-                show_label=True,
-                interactive=False
+            gr.Markdown(
+                """
+                ## Example:
+                """
             )
-            gr.Image(
-                value="after.jpg",
-                label="After",
-                show_label=True,
-                interactive=False
-            )
+            with gr.Row():
+                with gr.Column():
+                    gr.Image(
+                        value="before.jpg",
+                        label="Before",
+                        show_label=True,
+                        interactive=False
+                    )
+                with gr.Column():
+                    gr.Image(
+                        value="after.jpg",
+                        label="After",
+                        show_label=True,
+                        interactive=False
+                    )
 
         with gr.Accordion("More info", open=False):
             gr.Markdown(
@@ -348,8 +356,9 @@ if __name__ == "__main__":
             submit_btn.click(fn=advance_blur, inputs=[input_image], outputs=[output_image])
                 # Add a Gradio Examples section to let users see a sample run
 
+        with gr.row():
             gr.Examples(
-                examples=[["before.jpg"]],  # <-- Update with a real test image path
+                examples=[["before.jpg"]],
                 inputs=[input_image],
                 outputs=[output_image],
                 fn=advance_blur,
