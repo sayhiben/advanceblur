@@ -300,6 +300,15 @@ if __name__ == "__main__":
             overflow-x: auto;
             justify-content: flex-start;
         }
+
+        .example-image {
+            flex: 0 0 auto;
+            margin-right: 16px;
+        }
+
+        .example-image img {
+            max-width: 130px;
+        }
     }
     """
 
