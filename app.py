@@ -288,6 +288,13 @@ if __name__ == "__main__":
     }
 }
 
+example-images {
+    display: flex;
+    max-width: 600px;
+    align-items: center;
+    align: left;
+}
+
 .example-image {
     max-width: 200px !important;  /* fix the width of image */
     max-height: 200px !important; /* fix the height of image */
@@ -300,24 +307,23 @@ if __name__ == "__main__":
             Anonymize your group photos using Vance Blurring!
             """)
 
-        with gr.Row():
-           with gr.Row():
-                with gr.Column():
-                    gr.Image(
-                        value="before.jpg",
-                        label="Before",
-                        show_label=True,
-                        interactive=False,
-                        elem_classes=["example-image"]
-                    )
-                with gr.Column():
-                    gr.Image(
-                        value="after.jpg",
-                        label="After",
-                        show_label=True,
-                        interactive=False,
-                        elem_classes=["example-image"]
-                    )
+        with gr.Row(elem_id="example-images"):
+            with gr.Column():
+                gr.Image(
+                    value="before.jpg",
+                    label="Before",
+                    show_label=True,
+                    interactive=False,
+                    elem_classes=["example-image"]
+                )
+            with gr.Column():
+                gr.Image(
+                    value="after.jpg",
+                    label="After",
+                    show_label=True,
+                    interactive=False,
+                    elem_classes=["example-image"]
+                )
 
         with gr.Accordion("More info", open=False):
             gr.Markdown(
