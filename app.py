@@ -316,7 +316,7 @@ if __name__ == "__main__":
                 **Instructions:**
                 1. Upload your image.
                 2. Click the "Submit" button to apply "Vance Blurring" to your image.
-                3. Download the blurred image by long-clicking on it to Copy or down-arrow to Save.
+                3. Download the blurred image by long-clicking on it to Copy, or tap down-arrow to Save.
                 4. Share the blurred image with your friends and family, feeling confident in your privacy!
 
                 **Tips:**
