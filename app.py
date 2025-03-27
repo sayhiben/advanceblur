@@ -288,7 +288,7 @@ if __name__ == "__main__":
     }
 }
 
-#example-image {
+.example-image {
     max-width: 200px !important;  /* fix the width of image */
     max-height: 200px !important; /* fix the height of image */
 }
@@ -312,7 +312,8 @@ if __name__ == "__main__":
                         value="before.jpg",
                         label="Before",
                         show_label=True,
-                        interactive=False
+                        interactive=False,
+                        elem_classes=["example-image"]
                     )
                 with gr.Column():
                     gr.Image(
@@ -320,6 +321,7 @@ if __name__ == "__main__":
                         label="After",
                         show_label=True,
                         interactive=False
+                        elem_classes=["example-image"]
                     )
 
         with gr.Accordion("More info", open=False):
