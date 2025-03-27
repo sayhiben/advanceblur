@@ -268,64 +268,20 @@ def advance_blur(input_image):
 
 if __name__ == "__main__":
     # Updated, more flexible CSS
-    css_code = """
-    /* Container for side-by-side example images */
-    #example-images {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: flex-start;
-        flex-wrap: wrap;
-        gap: 16px;
-        margin: 0 auto;
-        max-width: 680px;  /* ✅ NEW: constrain the overall width */
-        width: 100%;
-    }
-
-    .example-image {
-        flex: 1 1 45%;
-        max-width: 300px;
-    }
-
-    .example-image img {
-        width: 100%;
-        height: auto;
-        border-radius: 8px;
-    }
-
-    /* Mobile: allow scroll if necessary */
-    @media (max-width: 768px) {
-        #example-images {
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            justify-content: flex-start;
-            max-width: 320px;
-        }
-
-        .example-image {
-            flex: 0 0 auto;
-            margin-right: 16px;
-            max-width: 50%;
-        }
-
-        .example-image img {
-            max-width: 130px;
-        }
-    }
-    """
+    css_code = ""
 
     with gr.Blocks(css=css_code, theme=gr.themes.Base()) as app:
         gr.Markdown("# 🥸 Advance Blur")
 
-        with gr.Row(elem_id="example-images"):
-            with gr.Column(elem_classes=["example-image"]):
+        with gr.Row():
+            with gr.Column(scale=1, min_width=160):
                 gr.Image(
                     value="before.jpg",
                     label="Before",
                     show_label=True,
                     interactive=False,
                 )
-            with gr.Column(elem_classes=["example-image"]):
+            with gr.Column(scale=1, min_width=160):
                 gr.Image(
                     value="after.jpg",
                     label="After",
