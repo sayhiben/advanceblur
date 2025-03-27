@@ -288,7 +288,7 @@ if __name__ == "__main__":
     }
 }
 
-example-images {
+#example-images {
     max-width: 320px;
     align-items: left;
     align: left;
@@ -307,22 +307,20 @@ example-images {
             """)
 
         with gr.Row(elem_id="example-images"):
-            with gr.Column():
-                gr.Image(
-                    value="before.jpg",
-                    label="Before",
-                    show_label=True,
-                    interactive=False,
-                    elem_classes=["example-image"]
-                )
-            with gr.Column():
-                gr.Image(
-                    value="after.jpg",
-                    label="After",
-                    show_label=True,
-                    interactive=False,
-                    elem_classes=["example-image"]
-                )
+            gr.Image(
+                value="before.jpg",
+                label="Before",
+                show_label=True,
+                interactive=False,
+                elem_classes=["example-image"]
+            )
+            gr.Image(
+                value="after.jpg",
+                label="After",
+                show_label=True,
+                interactive=False,
+                elem_classes=["example-image"]
+            )
 
         with gr.Accordion("More info", open=False):
             gr.Markdown(
